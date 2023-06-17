@@ -7,21 +7,24 @@ function isArrayOfOneRepeatedItem(arr: number[]) {
 }
 
 function minimalHeaviestSetA(arr: number[]) {
-  // Write your code here
-  const b: number[] = isArrayOfOneRepeatedItem(arr) ? arr : arr.sort((a, b) => a - b);
+  const totalWeigth = arraySum(arr);
+  const target = Math.floor(totalWeigth / 2);
+
+  arr.sort((a, b) => a - b);
+
   const a: number[] = [];
   
   while (
-    b.length > 0
-    && a.length < b.length
-    && arraySum(a) < arraySum(b)
+    arr.length > 0
+    && a.length < arr.length
+    && arraySum(a) < target
   ) {
-    const popped = b.pop();
+    const popped = arr.pop();
     
     if (popped) {
-      a.push(popped);
+      a.unshift(popped);
     }
   }
 
-  return a.sort((a, b) => a - b);
+  return a;
 }
