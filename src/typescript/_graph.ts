@@ -1,49 +1,49 @@
 class Graph {
-  adjList: Map<unknown, unknown[]>;
+  adjList: Map<string, string[]>;
 
   constructor() {
-    this.adjList = new Map<unknown, unknown[]>();
+    this.adjList = new Map<string, string[]>();
   }
 
-  addNode(node: string) {
-    if (!this.adjList.has(node)) {
-      this.adjList.set(node, []);
+  addVertex(vertex: string) {
+    if (!this.adjList.has(vertex)) {
+      this.adjList.set(vertex, []);
     }
   }
 
-  addEdge(fromNode: string, toNode: string) {
-    if (!this.adjList.has(fromNode)) {
-      this.addNode(fromNode);
+  addEdge(fromVertex: string, toVertex: string) {
+    if (!this.adjList.has(fromVertex)) {
+      this.addVertex(fromVertex);
     }
-    if (!this.adjList.has(toNode)) {
-      this.addNode(toNode);
+    if (!this.adjList.has(toVertex)) {
+      this.addVertex(toVertex);
     }
 
-    this.adjList.get(fromNode)?.push(toNode);
-    this.adjList.get(toNode)?.push(fromNode);
+    this.adjList.get(fromVertex)?.push(toVertex);
+    this.adjList.get(toVertex)?.push(fromVertex);
   }
 
-  getNodes() {
+  getVertexes() {
     return Array.from(this.adjList.keys());
   }
 
-  getNeighbors() {
+  getAdjacencyList() {
     return this.adjList;
   }
 
-  queueBfsTraverse(startNode: string) {
+  queueBfsTraverse(startVertex: string) {
     const queue: string[] = [];
     const visited = new Set<string>();
 
-    queue.push(startNode);
-    visited.add(startNode);
+    queue.push(startVertex);
+    visited.add(startVertex);
 
     while (queue.length > 0) {
-      const currNode = queue.shift() as string;
+      const currVertex = queue.shift() as string;
       
-      console.log(currNode);
+      console.log(currVertex);
 
-      const neighbors = this.adjList.get(currNode) as string[];
+      const neighbors = this.adjList.get(currVertex) as string[];
 
       if (neighbors) {
         for (const neighbor of neighbors) {
@@ -56,20 +56,20 @@ class Graph {
     }
   }
 
-  stackDfsTraverse(startNode: string) {
+  stackDfsTraverse(startVertex: string) {
     const stack: string[] = [];
     const visited = new Set<string>();
 
-    stack.push(startNode);
+    stack.push(startVertex);
 
     while (stack.length > 0) {
-      const currNode = stack.pop() as string;
+      const currVertex = stack.pop() as string;
 
-      visited.add(currNode);
+      visited.add(currVertex);
 
-      console.log(currNode);
+      console.log(currVertex);
 
-      const neighbors = this.adjList.get(currNode) as string[];
+      const neighbors = this.adjList.get(currVertex) as string[];
 
       if (neighbors) {
         for (const neighbor of neighbors) {
@@ -81,18 +81,72 @@ class Graph {
     }
   }
 
-  recursiveDfsTraverse(startNode: string) {
+  dfsExistsPathBetweenVertexes(start: string, end: string) {
+    const visited = new Set<string>();
+    const stack: string[] = [];
+
+    stack.push(start);
+
+    while (stack.length > 0) {
+      const currVertex = stack.pop();
+        
+      visited.add(currVertex!);
+
+      if (currVertex == end) {
+          return true;
+      }
+
+      const neighbors = this.adjList.get(currVertex!) || [];
+
+      for (let neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          stack.push(neighbor);
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bfsExistsPathBetweenVertexes(start: string, end: string) {
+    const visited = new Set<string>();
+    const queue: string[] = [];
+
+    visited.add(start);
+    queue.push(start);
+
+    while (queue.length > 0) {
+      const currVertex = queue.shift();
+        
+      if (currVertex == end) {
+        return true;
+      }
+      
+      const neighbors = this.adjList.get(currVertex!) || [];
+      
+      for (let neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          visited.add(currVertex!);
+          queue.push(neighbor);
+        }
+      }
+    }
+
+    return false;
+  }
+
+  recursiveDfsTraverse(startVertex: string) {
     const visited = new Set<string>();
   
-    this.dfsRecursion(startNode, visited);
+    this.dfsRecursion(startVertex, visited);
   }
   
-  private dfsRecursion(node: string, visited: Set<string>) {
-    visited.add(node);
+  private dfsRecursion(vertex: string, visited: Set<string>) {
+    visited.add(vertex);
   
-    console.log(node);
+    console.log(vertex);
     
-    const neighbors = this.adjList.get(node) as string[];
+    const neighbors = this.adjList.get(vertex) as string[];
   
     if (neighbors) {
       for (const neighbor of neighbors) {
@@ -106,14 +160,18 @@ class Graph {
 
 const g = new Graph();
 
-g.addEdge('0', '1');
-g.addEdge('0', '2');
-g.addEdge('3', '2');
+g.addEdge("A", "B");
+g.addEdge("B", "D");
+g.addEdge("D", "E");
 
-// console.log(g.getNodes());
-console.log(g.getNeighbors());
+// console.log(g.getVertexes());
+console.log(g.getAdjacencyList());
 
 // g.recursiveDfsTraverse('a');
 // g.stackDfsTraverse('a');
 
 // g.queueBfsTraverse('2');
+
+console.log(g.dfsExistsPathBetweenVertexes('B', 'C'))
+console.log(g.bfsExistsPathBetweenVertexes('B', 'C'))
+
