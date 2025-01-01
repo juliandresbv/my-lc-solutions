@@ -1,3 +1,5 @@
+package mergealternately
+
 func mergeAlternately(word1 string, word2 string) string {
 	var word1Index int = 0
 	var word2Index int = 0
